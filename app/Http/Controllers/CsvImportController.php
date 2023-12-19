@@ -39,12 +39,12 @@ class CsvImportController extends Controller
             ];
         }
 
-        // // otherwise return percentage informatoin
-        // $handler = $fileReceived->handler();
-        // return [
-        //     'done' => $handler->getPercentageDone(),
-        //     'status' => true
-        // ];
+        // otherwise return percentage informatoin
+        $handler = $fileReceived->handler();
+        return [
+            'done' => $handler->getPercentageDone(),
+            'status' => true
+        ];
     }
 
 
