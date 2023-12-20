@@ -18,6 +18,7 @@ use App\Models\CommonFeeCollectionHeadWise;
 use App\Models\FinancialTransaction;
 use App\Models\FinancialTransactionDetail;
 use App\Traits\importCSV;
+use App\Models\CsvTempData;
 class ProcessLargeCSV implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -46,6 +47,43 @@ class ProcessLargeCSV implements ShouldQueue
 
         while (($data = fgetcsv($file, 1000, ',')) !== false ) {
 
+
+        $data = array_map('trim', $data);
+                    $data = array_map(function ($value) {
+                        return mb_convert_encoding($value, 'UTF-8', 'UTF-8');
+                    }, $data);
+
+            // Saving all data 
+            $temp= new CsvTempData();
+            $temp->date=\Carbon\Carbon::createFromFormat('d-m-Y', $data[1])->format('Y-m-d');
+            $temp->accademic_year=$data[2];
+            $temp->session=$data[3];
+            $temp->alloted_category=$data[4];
+            $temp->voucher_type=$data[5];
+            $temp->voucher_no=$data[6];
+            $temp->roll_no=$data[7];
+            $temp->admission_no=$data[8];
+            $temp->status=$data[9];
+            $temp->fee_category=$data[10];
+            $temp->faculty=$data[11];
+            $temp->program=$data[12];
+            $temp->department=$data[13];
+            $temp->batch=$data[14];
+            $temp->recept=$data[15];
+            $temp->fee_head=$data[16];
+            $temp->due_amount=$data[17];
+            $temp->paid_amount=$data[18];
+            $temp->consession_amount=$data[19];
+            $temp->scholorship_amount=$data[20];
+            $temp->reverse_amount=$data[21];
+            $temp->write_amount=$data[22];
+            $temp->adjust_amount=$data[23];
+            $temp->refund_amount=$data[24];
+            $temp->fund_amount=$data[25];
+            $temp->remarks=$data[26];
+            $temp->save();
+
+
             // saving branches;
             $branch=$this->saveBranch($data[11]);
 
@@ -60,6 +98,9 @@ class ProcessLargeCSV implements ShouldQueue
 
             // Saving fee type data
             $fee_type=$this->saveFeeType($branch,$data[16],$fee_collection_type);
+
+
+
 
 
 
